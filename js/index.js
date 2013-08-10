@@ -39,17 +39,12 @@ var app = {
     initialize: function() {
         this.bindEvents();
         
-        // Compile templates
-        //this.homeTpl = Handlebars.compile($("#home-tpl").html());
-        //this.employeeLiTpl = Handlebars.compile($("#employee-li-tpl").html());
-        
         var self = this;
         this.familyURL = /^#family\/(\d{1,})/;        
         
-        //var store = null;
-        self.route();
-        
+        self.route();        
     },
+    
     // Bind Event Listeners
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
