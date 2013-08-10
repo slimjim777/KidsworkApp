@@ -42,7 +42,7 @@ var app = {
         var self = this;
         this.familyURL = /^#family\/(\d{1,})/;        
         
-        self.route();        
+        //self.route();        
     },
     
     // Bind Event Listeners
