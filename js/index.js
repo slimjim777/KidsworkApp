@@ -54,7 +54,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        //document.addEventListener('deviceready', this.onDeviceReady, false);
+        document.addEventListener('deviceready', this.onDeviceReady, false);
         $(window).on('hashchange', $.proxy(this.route, this));
     },
     // deviceready Event Handler
@@ -62,26 +62,22 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        if(nfc) {
-            nfc.addNdefListener(function (nfcEvent) {
-                scannedNdef(nfcEvent);
-            }, function () {
-                console.log("Success.  Listening for tags (ndef).");
-            }, function () {
+        nfc.addNdefListener(function (nfcEvent) {
+            scannedNdef(nfcEvent);
+        }, function () {
+            alert("Success.  Listening for tags (ndef).");
+        }, function () {
+            alert("NFC Functionality is not working, is NFC enabled on your device?");
+        });
+
+        nfc.addTagDiscoveredListener(
+            scannedTag, 
+            function () {
+                alert("Success.  Listening for tags (discovered)");
+            },
+            function () {
                 alert("NFC Functionality is not working, is NFC enabled on your device?");
-            });
-
-            nfc.addTagDiscoveredListener(
-                scannedTag, 
-                function () {
-                    console.log("Success.  Listening for tags (discovered)");
-                },
-                function () {
-                    alert("NFC Functionality is not working, is NFC enabled on your device?");
-            });
-
-            nfc.addTagDiscoveredListener(scannedTag, win, fail);
-        }
+        });
     },
 
     route: function() {
