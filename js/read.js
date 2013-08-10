@@ -111,7 +111,6 @@ var controller = {
             data: JSON.stringify(family_data),
             success: function(data) {
                 if ('error' in data) {
-                    console.log(showMessage);
                     showMessage($('#f-message'), data.error, false, false);
                 } else {
                     app.registerPage = new RegisterView(data).render();
@@ -124,16 +123,22 @@ var controller = {
                 showMessage($('#f-message'), error.statusText, false);
                 return null;
             }
-        });
-        
+        });   
+    },
+    
+    // Get the child details using the tag number
+    childByTag: function(tag) {
+        // Add the child to the list of people to sign-in/out
+        alert("Not yet implemented");
+          
     }
+    
 
 };
 
 
 // We have the tag in a global object
 function nfcActivity(nfcEvent) { // On NFC Activity..
-  console.log("Tag found, yay!");
   var action = "";
   
   var hash = window.location.hash;
@@ -167,8 +172,8 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // Analyse the prefix and tag Number
     var groups = tagData.match(/(^[FCL])(\d+$)/);
     if ((!groups) || (groups.length != 3)) {
-        alert($('f-familyid'), "The tag number is invalid: " + prefix_tag);
-        showMessage("The tag number is invalid: " + prefix_tag, false);
+        alert($('f-familyid'), "The tag number is invalid: " + tagData);
+        showMessage($('f-familyid'), "The tag number is invalid: " + tagData, false, false);
         return; 
     }
 
@@ -179,9 +184,20 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
 	if (($('f-familyid')) && (tagPrefix === 'F')) {
 	    // We're on the family screen and are expecting a family tag
 	    controller.familyByTag(tagNumber);
-	}
-	
+	} else if (($('f-familyid')) && (tagPrefix !== 'F')) {
+	    // We're on the family screen and got an unexpected tag
+	    showMessage($('f-message'), "The tag number is invalid: " + tagData, false, false);
+	} else if (($('r-kid')) && (tagPrefix === 'C')) {
+	    // We're on the register screen and are expecting a child tag
+	    controller.childByTag(tagNumber);
+	} else if (($('r-kid')) && (tagPrefix !== 'C')) {
+	    // We're on the family screen and got an unexpected tag
+	    showMessage($('r-message'), "The tag number is invalid: " + tagData, false, false);
+    } else {
+        alert("The tag number is invalid: " + tagData);
+    }
   }
+  
 }
 
 function showMessage(el, words, success, hold) {
