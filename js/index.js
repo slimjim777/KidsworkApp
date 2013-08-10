@@ -21,6 +21,17 @@ var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
 
 var slider = new PageSlider($("body"));
 
+
+function scannedNdef(nfcEvent) { // On NFC Activity..
+    alert("scannedNdef: " + JSON.stringify(nfcEvent));
+
+}
+
+function scannedTag(nfcEvent) { // On NFC Activity..
+    alert("scannedTagDiscovered: " + JSON.stringify(nfcEvent));
+
+}
+
  
 var app = {
     // Application Constructor
@@ -51,19 +62,26 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        //phantomLimb.init({src: 'https://github.com/brian-c/phantom-limb/raw/master/limb-black.png', lefty: false});
-    if(nfc) {
-        nfc.addNdefListener(function (nfcEvent) {
-            scannedNdef(nfcEvent);
-        }, function () {
-            console.log("Success.  Listening for rings..");
-        }, function () {
-            alert("NFC Functionality is not working, is NFC enabled on your device?");
-        });
-    }
+        if(nfc) {
+            nfc.addNdefListener(function (nfcEvent) {
+                scannedNdef(nfcEvent);
+            }, function () {
+                console.log("Success.  Listening for tags (ndef).");
+            }, function () {
+                alert("NFC Functionality is not working, is NFC enabled on your device?");
+            });
 
+            nfc.addTagDiscoveredListener(
+                scannedTag, 
+                function () {
+                    console.log("Success.  Listening for tags (discovered)");
+                },
+                function () {
+                    alert("NFC Functionality is not working, is NFC enabled on your device?");
+            });
 
-
+            nfc.addTagDiscoveredListener(scannedTag, win, fail);
+        }
     },
 
     route: function() {
@@ -103,7 +121,7 @@ var app = {
             //this.store.findById(Number(match[1]), function(employee) {
             var eventId = Number(match[1]);
             var e = {};
-            e.name = ''
+            e.name = '';
             e.tagNumber = '';
             
             this.familyPage = new FamilyView(e).render();
@@ -120,7 +138,3 @@ var app = {
 };
 
 
-function scannedNdef(nfcEvent) { // On NFC Activity..
-    alert("scannedNdef: " + JSON.stringify(nfcEvent));
-
-}
