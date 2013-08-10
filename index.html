@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/handlebars.js"></script>      
+    <!--script src="lib/ratchet.js"></script-->      
+    <script src="lib/pageslider.js"></script>      
+    <link rel="stylesheet" type="text/css" href="css/pageslider.css" />
+    <link rel="stylesheet" type="text/css" href="css/ratchet.css" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+    
+    <!--script src="https://raw.github.com/brian-c/phantom-limb/master/phantom-limb.js"></script-->    
+    <title>Kidswork Register</title>
+        <script>
+$( document ).bind( "mobileinit", function() {
+    $.mobile.allowCrossDomainPages = true;
+    $.mobile.touchOverflowEnabled = true;
+});    
+    </script>
+    
+    
+</head>
+<body>
+    <!-- Events -->
+    <script id="home-tpl" type="text/x-handlebars-template">
+        <header class="bar-title">
+            <h1 class="title">Events</h1>
+        </header>
+        <div id="events" class="content">
+            
+            <ul class="list">
+                {{#.}}
+                <li><a href="#family/{{this.event_id}}" data-transition="slide-in">{{this.name}}<span class="chevron"></span></a></li>
+                {{/.}}
+            </ul>
+        </div>        
+    </script>
+    
+          
+    <script id="family-tpl" type="text/x-handlebars-template">
+        <header class="bar-title">
+            <a href='#' class="button header-button header-button-left">Back</a>
+            <h1 class="title">Select Family</h1>
+        </header>
+        <div class='details'>
+            <h3>Scan or enter the Family tag</h3>
+            <img class='scan-image' src='img/frame.png' />
+            <h1>{{name}}</h1>
+            <h2>{{tagNumber}}</h2>
+        </div>
+    </script>
+
+    <div id="container"></div>
+    
+    <script type="text/javascript" src="phonegap.js"></script>
+    <script src="js/HomeView.js"></script>
+    <script src="js/FamilyView.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+</body>
+</html>
