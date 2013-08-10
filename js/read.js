@@ -161,7 +161,7 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // read
 	console.log("Reading");
 	var tag = nfcEvent.tag;
-	var tagData = nfc.bytesToString(ring.ndefMessage[0].payload); // TODO make this less fragile 
+	var tagData = nfc.bytesToString(tag.ndefMessage[0].payload); // TODO make this less fragile 
 	alert(tagData);
 
     // Analyse the prefix and tag Number
