@@ -1,6 +1,16 @@
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
 var slider = new PageSlider($("body"));
 
+var context = {
+    eventId: null,
+    eventName: null,
+    familyId: null,
+    familyTag: null,
+    storeEvent: function(eventid, name) {
+        this.eventId = eventid;
+        this.eventName = name;
+    }
+};
 
 var app = {
   initialize: function () {
@@ -46,8 +56,13 @@ var app = {
         $('body').html(page);
         //slider.slidePage($(page));          
         
+    } else if (hash.match(/^#register/)) {
+        this.registerPage = new RegisterView({}).render();
+        var page = this.registerPage.el;
+        $('body').html(page);
+        //slider.slidePage($(page));
     }
-  
+    
   }
 };
 
@@ -57,9 +72,7 @@ var controller = {
         //$('body').append('Please wait...');
         if (!app.eventsPage) {
             $.getJSON(BASE_URL + 'events', function(data) {
-                //if (!app.eventsPage) {
-                    app.eventsPage = new EventsView(data.result).render();
-                //}
+                app.eventsPage = new EventsView(data.result).render();
                 page = app.eventsPage.el;
                 $('body').html(page);
                 //slider.slidePage($(page));  
@@ -70,7 +83,47 @@ var controller = {
             page = app.eventsPage.el;
             $('body').html(page);
         }
+    },
+    
+    // Family tag entered manually
+    familyTagEnter: function(ev) {
+        if (ev.keyCode==13) {
+            var familyId = $('#f-familyid').val();
+            this.familyByTag(familyId);
+        }
+    },
+    
+    // Get the family details using the tag number
+    familyByTag: function(tag) {
+        context.familyTag = tag;
+        var family_data = {
+            "family_number": context.familyTag,
+            "event_id": context.eventId
+        };
+    
+        var request = $.ajax({
+            type: "POST",
+            url: BASE_URL + "family",
+            contentType:"application/json",
+            dataType: "json",
+            data: JSON.stringify(family_data),
+            success: function(data) {
+                app.registerPage = new RegisterView(data).render();
+                var page = app.registerPage.el;
+                $('body').html(page);
+                //slider.slidePage($(page));  
+            
+            },
+            error: function(error) {
+                //$('#r-errors').text(error);
+                //$('#r-status').attr('src',FAMILYERROR);
+                return null;
+            }
+        });
+        
     }
+    
+    
 };
 
 

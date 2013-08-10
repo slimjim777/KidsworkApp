@@ -21,7 +21,7 @@
         
         <ul class="list">
             {{#.}}
-            <li><a href="#family" data-transition="slide-in">{{this.name}}<span class="chevron"></span></a></li>
+            <li><a href="#family" data-transition="slide-in" onclick="context.storeEvent({{this.event_id}},'{{this.name}}')">{{this.name}}<span class="chevron"></span></a></li>
             {{/.}}
         </ul>
     </div>        
@@ -32,12 +32,48 @@
     <header class="bar-title">
         <a href='#' class="button header-button header-button-left">Back</a>
         <h1 class="title">Select Family</h1>
-        <h3 class="bar-header-secondary">Scan or enter the Family tag</h3>
     </header>
     <div class='content'>
         <!--img class='scan-image' src='img/frame.png' /-->
         <h1>{{name}}</h1>
         <h2>{{tagNumber}}</h2>
+        <div class="input-group">
+          <div class="input-row">
+              <img src="img/scan.png" alt="scan tag" />
+          </div>
+          <div class="input-row">
+            <label>Tag Number</label>
+            <input id="f-familyid" type="text" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)">
+          </div>
+        </div>
+    </div>
+</script>
+
+<!-- Register -->
+<script id="register-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <a href='#' class="button header-button header-button-left">Back</a>
+        <h1 class="title">Register Children</h1>
+    </header>
+    <div class="content">
+        <br />
+              <ul class="list inset">
+                  <li class="list-divider">Family</li>
+                  <li>{{parent_name}} ({{tagnumber}})</li>
+                  <li class="list-divider">Children</li>
+                  {{#each children}}
+                  <li><a href="#register" data-transition="slide-in" >{{this.name}}<span class="chevron"></span></a></li>
+                  {{/each}}
+              </ul>   
+        <div class="input-group">
+          <div class="input-row">
+       
+          </div>
+          <div class="input-row">
+            <label>Tag Number</label>
+            <input id="r-kid" type="text" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)">
+          </div>
+        </div>
     </div>
 </script>
 
@@ -47,6 +83,7 @@
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/EventsView.js"></script>
 <script type="text/javascript" src="js/FamilyView.js"></script>
+<script type="text/javascript" src="js/RegisterView.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 
