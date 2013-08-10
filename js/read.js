@@ -1,4 +1,4 @@
-
+var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
 var slider = new PageSlider($("body"));
 
 
@@ -12,6 +12,7 @@ var app = {
   
   bind: function () {
     document.addEventListener('deviceready', this.deviceready, false);
+    $(window).on('hashchange', $.proxy(this.route, this));
   },
   
   deviceready: function () {
@@ -35,20 +36,54 @@ var app = {
     console.log(hash);
     
     if (!hash) {
-        this.homePage = new HomeView({}).render();
-        var page = this.homePage.el;
-        slider.slidePage($(page));          
+        controller.events();
+        //this.eventsPage = new EventsView({}).render();
+        //var page = this.eventsPage.el;
+        //slider.slidePage($(page));          
+    } else if (hash.match(/^#family/)) {
+        this.familyPage = new FamilyView({}).render();
+        var page = this.familyPage.el;
+        $('body').html(page);
+        //slider.slidePage($(page));          
+        
     }
   
   }
 };
 
 
+var controller = {
+    events: function() {
+        //$('body').append('Please wait...');
+        if (!app.eventsPage) {
+            $.getJSON(BASE_URL + 'events', function(data) {
+                //if (!app.eventsPage) {
+                    app.eventsPage = new EventsView(data.result).render();
+                //}
+                page = app.eventsPage.el;
+                $('body').html(page);
+                //slider.slidePage($(page));  
+            
+            });
+        } else {
+            // Show the events that were previously fetched
+            page = app.eventsPage.el;
+            $('body').html(page);
+        }
+    }
+};
+
 
 // We have the tag in a global object
 function ring(nfcEvent) { // On NFC Activity..
   console.log("Tag found, yay!");
   var action = "";
+  
+  var hash = window.location.hash;
+  if (!hash) {
+    alert('Ignore scan for events page');
+    return;
+  }
   
   if (action !== "") { // do we have an action to write or not?
 	// write

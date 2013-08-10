@@ -1,4 +1,4 @@
-var HomeView = function(events) {
+var EventsView = function(events) {
 
     this.findByName = function() {
         var e = {};
@@ -17,12 +17,12 @@ var HomeView = function(events) {
     this.initialize(); 
 
     this.render = function() {
-        this.el.html(HomeView.template(events));
+        this.el.html(EventsView.template(events));
         return this;
     };
     
 
 };
  
-HomeView.template = Handlebars.compile($("#home-tpl").html());
+EventsView.template = Handlebars.compile($("#events-tpl").html());
 
