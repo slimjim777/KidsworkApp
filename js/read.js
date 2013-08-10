@@ -6,9 +6,13 @@ var context = {
     eventName: null,
     familyId: null,
     familyTag: null,
+    action: null,
     storeEvent: function(eventid, name) {
         this.eventId = eventid;
         this.eventName = name;
+    },
+    storeAction: function(act) {
+        this.action = act;
     }
 };
 
@@ -52,11 +56,17 @@ var app = {
         //var page = this.eventsPage.el;
         //slider.slidePage($(page));          
     } else if (hash.match(/^#family/)) {
-        this.familyPage = new FamilyView({}).render();
+        var familyData = {action: context.action, eventName: context.eventName};
+        this.familyPage = new FamilyView(familyData).render();
         page = this.familyPage.el;
         $('body').html(page);
         //slider.slidePage($(page));          
-        
+    } else if (hash.match(/^#overview/)) {
+        var overviewData = {name: context.eventName, eventId: context.eventId};
+        this.overviewPage = new OverviewView(overviewData).render();
+        page = this.overviewPage.el;
+        $('body').html(page);
+        //slider.slidePage($(page));
     } else if (hash.match(/^#register/)) {
         this.registerPage = new RegisterView({}).render();
         page = this.registerPage.el;
@@ -126,11 +136,36 @@ var controller = {
         });   
     },
     
+    // Child selected by click
+    childClicked: function(el)
+    {
+        // Add the child to the sign-in list (if not already there)
+        var found = false;
+        for (var i in signedin) {
+            e = signedin[i];
+            if (el.id == 'k-' + e.tagnumber) {
+                found = true;
+            }
+        }
+    
+        if (!found) {
+            signedin.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).html()});
+            var item = '<li><a href="#" name="' + el.name + '-in" id="' + el.id + '-in"' + '>'+ $(el).html() +'</a></li>';
+            var list_in = $('#r-list-in');
+            list_in.append(item);
+        }
+    },
+
+    // Get the child details using the tag number
+    childTagEnter: function(ev) {
+        // Add the child to the list of people to sign-in/out
+        alert("Not yet implemented");
+    },
+
     // Get the child details using the tag number
     childByTag: function(tag) {
         // Add the child to the list of people to sign-in/out
         alert("Not yet implemented");
-          
     }
     
 

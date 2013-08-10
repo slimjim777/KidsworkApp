@@ -21,24 +21,52 @@
         
         <ul class="list">
             {{#.}}
-            <li><a href="#family" data-transition="slide-in" onclick="context.storeEvent({{this.event_id}},'{{this.name}}')">{{this.name}}<span class="chevron"></span></a></li>
+            <li><a href="#overview" data-transition="slide-in" onclick="context.storeEvent({{this.event_id}},'{{this.name}}')">{{this.name}}<span class="chevron"></span></a></li>
             {{/.}}
         </ul>
     </div>        
 </script>
 
+<!-- Actions -->
+<script id="overview-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <a href='#' class="button header-button header-button-left">Back</a>
+        <h1 class="title">{{name}}</h1>
+    </header>
+    <nav class="bar-tab">
+      <ul class="tab-inner">
+        <li class="tab-item">
+          <a href="#family" onclick="context.storeAction('Sign-In')">
+            <img class="tab-icon" src="img/icon-profile.png">
+            <div class="tab-label">Sign-In</div>
+          </a>
+        </li>
+        <li class="tab-item">
+          <a href="#family" onclick="context.storeAction('Sign-Out')">
+            <img class="tab-icon" src="img/icon-messages.png">
+            <div class="tab-label">Sign-Out</div>
+          </a>
+        </li>
+      </ul>
+    </nav>    
+    <div class='content'>
+                
+    </div>
+</script>
+
 <!-- Family -->
 <script id="family-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
-        <a href='#' class="button header-button header-button-left">Back</a>
+        <a href='#overview' class="button header-button header-button-left">Back</a>
         <h1 class="title">Select Family</h1>
     </header>
     <div class='content'>
-        <div id="f-message"></div>      
+        <div id="f-message"></div>
+        <div><h3 class="instructions">{{action}} for {{eventName}}</h3></div>   
+        <input id="f-familyid" type="search" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)" />
         <div class="input-row">
             <img src="img/scan.png" alt="scan tag" class="center" />
         </div>
-        <input id="f-familyid" type="search" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)" />
     </div>
 </script>
 
@@ -70,6 +98,7 @@
 <script type="text/javascript" src="js/EventsView.js"></script>
 <script type="text/javascript" src="js/FamilyView.js"></script>
 <script type="text/javascript" src="js/RegisterView.js"></script>
+<script type="text/javascript" src="js/OverviewView.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 

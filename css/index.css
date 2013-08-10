@@ -1,7 +1,8 @@
-.instructions {
+h3.instructions {
     color: #999;
     display: block;
-    padding: 5px;   
+    text-align: center;
+    padding: 0.5em;
 }
 
 img.center {
