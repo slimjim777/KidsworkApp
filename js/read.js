@@ -31,10 +31,10 @@ var app = {
     console.log('deviceready');
     if(nfc){
       nfc.addNdefListener(function (nfcEvent) {
-        ring(nfcEvent); // TODO uncomment me
+        nfcActivity(nfcEvent); // TODO uncomment me
         console.log("Attempting to bind to NFC");
       }, function () {
-        console.log("Success.  Listening for rings..");
+        console.log("Success.  Listening for tags..");
       }, function () {
         alert("NFC Functionality is not working, is NFC enabled on your device?");
       });
@@ -43,6 +43,7 @@ var app = {
   
   route: function() {
     var hash = window.location.hash;
+    var page;
     console.log(hash);
     
     if (!hash) {
@@ -52,13 +53,13 @@ var app = {
         //slider.slidePage($(page));          
     } else if (hash.match(/^#family/)) {
         this.familyPage = new FamilyView({}).render();
-        var page = this.familyPage.el;
+        page = this.familyPage.el;
         $('body').html(page);
         //slider.slidePage($(page));          
         
     } else if (hash.match(/^#register/)) {
         this.registerPage = new RegisterView({}).render();
-        var page = this.registerPage.el;
+        page = this.registerPage.el;
         $('body').html(page);
         //slider.slidePage($(page));
     }
@@ -68,6 +69,7 @@ var app = {
 
 
 var controller = {
+
     events: function() {
         //$('body').append('Please wait...');
         if (!app.eventsPage) {
@@ -108,27 +110,29 @@ var controller = {
             dataType: "json",
             data: JSON.stringify(family_data),
             success: function(data) {
-                app.registerPage = new RegisterView(data).render();
-                var page = app.registerPage.el;
-                $('body').html(page);
-                //slider.slidePage($(page));  
-            
+                if ('error' in data) {
+                    console.log(showMessage);
+                    showMessage($('#f-message'), data.error, false, false);
+                } else {
+                    app.registerPage = new RegisterView(data).render();
+                    var page = app.registerPage.el;
+                    $('body').html(page);
+                    //slider.slidePage($(page));  
+                }
             },
             error: function(error) {
-                //$('#r-errors').text(error);
-                //$('#r-status').attr('src',FAMILYERROR);
+                showMessage($('#f-message'), error.statusText, false);
                 return null;
             }
         });
         
     }
-    
-    
+
 };
 
 
 // We have the tag in a global object
-function ring(nfcEvent) { // On NFC Activity..
+function nfcActivity(nfcEvent) { // On NFC Activity..
   console.log("Tag found, yay!");
   var action = "";
   
@@ -156,11 +160,44 @@ function ring(nfcEvent) { // On NFC Activity..
   } else {
     // read
 	console.log("Reading");
-	console.log(nfcEvent);
-	var ring = nfcEvent.tag;
-	console.log(ring);
-	ringData = nfc.bytesToString(ring.ndefMessage[0].payload); // TODO make this less fragile 
-	alert(ringData);
+	var tag = nfcEvent.tag;
+	var tagData = nfc.bytesToString(ring.ndefMessage[0].payload); // TODO make this less fragile 
+	alert(tagData);
+
+    // Analyse the prefix and tag Number
+    var groups = tagData.match(/(^[FCL])(\d+$)/);
+    if ((!groups) || (groups.length != 3)) {
+        alert($('f-familyid'), "The tag number is invalid: " + prefix_tag);
+        showMessage("The tag number is invalid: " + prefix_tag, false);
+        return; 
+    }
+
+    // Store the tag details
+    tagPrefix = groups[1];
+    tagNumber = groups[2];
+	
+	if (($('f-familyid')) && (tagPrefix === 'F')) {
+	    // We're on the family screen and are expecting a family tag
+	    controller.familyByTag(tagNumber);
+	}
 	
   }
+}
+
+function showMessage(el, words, success, hold) {
+    if (success) {
+        el.removeClass( "message error" );
+        el.addClass( "message success" );
+
+    } else {
+        el.removeClass( "message success" );
+        el.addClass( "message error" );    
+    }
+
+    el.html('<h3>' + words + '</h3>');
+    if (!hold) {
+        el.slideDown('slow').delay(1000).slideToggle('slow');
+    } else {
+        el.slideDown('slow');
+    }
 }

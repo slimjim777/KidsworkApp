@@ -34,18 +34,11 @@
         <h1 class="title">Select Family</h1>
     </header>
     <div class='content'>
-        <!--img class='scan-image' src='img/frame.png' /-->
-        <h1>{{name}}</h1>
-        <h2>{{tagNumber}}</h2>
-        <div class="input-group">
-          <div class="input-row">
-              <img src="img/scan.png" alt="scan tag" />
-          </div>
-          <div class="input-row">
-            <label>Tag Number</label>
-            <input id="f-familyid" type="text" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)">
-          </div>
+        <div id="f-message">aaaa</div>      
+        <div class="input-row">
+            <img src="img/scan.png" alt="scan tag" class="center" />
         </div>
+        <input id="f-familyid" type="search" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)" />
     </div>
 </script>
 
@@ -62,18 +55,12 @@
                   <li>{{parent_name}} ({{tagnumber}})</li>
                   <li class="list-divider">Children</li>
                   {{#each children}}
-                  <li><a href="#register" data-transition="slide-in" >{{this.name}}<span class="chevron"></span></a></li>
+                  <li><a href="#register" data-transition="slide-in" id="k-{{this.tagnumber}} name="k-{{this.personid}}" >{{this.name}}<span class="chevron"></span></a></li>
                   {{/each}}
               </ul>   
-        <div class="input-group">
-          <div class="input-row">
-       
-          </div>
-          <div class="input-row">
-            <label>Tag Number</label>
-            <input id="r-kid" type="text" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)">
-          </div>
-        </div>
+
+            <input id="r-kid" type="search" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)">
+
     </div>
 </script>
 
