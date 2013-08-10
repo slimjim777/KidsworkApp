@@ -1,12 +1,19 @@
 
+var slider = new PageSlider($("body"));
+
 
 var app = {
   initialize: function () {
     this.bind();
+    
+    var self = this;
+    self.route();
   },
+  
   bind: function () {
     document.addEventListener('deviceready', this.deviceready, false);
   },
+  
   deviceready: function () {
     // note that this is an event handler so the scope is that of the event
     // so we need to call app.report(), and not this.report()
@@ -21,6 +28,18 @@ var app = {
         alert("NFC Functionality is not working, is NFC enabled on your device?");
       });
     }
+  },
+  
+  route: function() {
+    var hash = window.location.hash;
+    console.log(hash);
+    
+    if (!hash) {
+        this.homePage = new HomeView({}).render();
+        var page = this.homePage.el;
+        slider.slidePage($(page));          
+    }
+  
   }
 };
 

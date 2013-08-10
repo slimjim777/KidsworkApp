@@ -2,14 +2,30 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name = "format-detection" content = "telephone=no" />
+        <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-        <title>NFC Read</title>
-                
+        <title>Kidswork Registration</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/ratchet.css" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />        
     </head>
 
 <body>
-<div class="container">
+
+<script id="home-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <a href='#' class="button header-button header-button-left">Back</a>
+        <h1 class="title">Select Family</h1>
+    </header>
+    <div class='details'>
+        <h3>Scan or enter the Family tag</h3>
+        <img class='scan-image' src='img/frame.png' />
+        <h1>{{name}}</h1>
+        <h2>{{tagNumber}}</h2>
+    </div>
+</script>
+
+<!--div class="container">
 <div class="mainContents">
 
 <div id="writeRing" class="step writeRing">
@@ -20,11 +36,13 @@
   <button id="finish" type="button" class="btn">Finish</button>
 </div>
 </div>
-</div>
+</div-->
 
 <script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
-<script src="lib/pageslider.js"></script>      
+<script type="text/javascript" src="lib/handlebars.js"></script>      
+<script type="text/javascript" src="lib/pageslider.js"></script>      
 <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/HomeView.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 
