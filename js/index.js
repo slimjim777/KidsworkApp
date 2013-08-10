@@ -21,13 +21,14 @@ var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
 
 var slider = new PageSlider($("body"));
 
-
-function scannedNdef(nfcEvent) { // On NFC Activity..
+// On NFC Activity...
+function scannedNdef(nfcEvent) { 
     alert("scannedNdef: " + JSON.stringify(nfcEvent));
 
 }
 
-function scannedTag(nfcEvent) { // On NFC Activity..
+// On NFC Activity...
+function scannedTag(nfcEvent) { 
     alert("scannedTagDiscovered: " + JSON.stringify(nfcEvent));
 
 }
@@ -50,17 +51,12 @@ var app = {
         
     },
     // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
         $(window).on('hashchange', $.proxy(this.route, this));
     },
+    
     // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         nfc.addNdefListener(function (nfcEvent) {
             scannedNdef(nfcEvent);
@@ -70,6 +66,7 @@ var app = {
             alert("NFC Functionality is not working, is NFC enabled on your device?");
         });
 
+        /*
         nfc.addTagDiscoveredListener(
             scannedTag, 
             function () {
@@ -78,6 +75,7 @@ var app = {
             function () {
                 alert("NFC Functionality is not working, is NFC enabled on your device?");
         });
+        */
     },
 
     route: function() {
@@ -117,7 +115,7 @@ var app = {
             //this.store.findById(Number(match[1]), function(employee) {
             var eventId = Number(match[1]);
             var e = {};
-            e.name = '';
+            e.name = eventId;
             e.tagNumber = '';
             
             this.familyPage = new FamilyView(e).render();

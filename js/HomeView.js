@@ -22,7 +22,7 @@ var HomeView = function(events) {
     };
     
 
-}
+};
  
 HomeView.template = Handlebars.compile($("#home-tpl").html());
 
