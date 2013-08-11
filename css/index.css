@@ -65,9 +65,9 @@ div.highlight {
 }
 
 .toggle.active {
-    content: "Out";
+    content: "In";
 }
 
-.toggle.active:before {
-    content: "In";
+.toggle:before {
+    content: "Out";
 }

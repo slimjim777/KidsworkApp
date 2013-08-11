@@ -7,6 +7,7 @@ var RegisterView = function(data) {
     this.initialize();
  
     this.render = function() {
+        console.log(data);
         this.el.html(RegisterView.template(data));
         return this;
     };

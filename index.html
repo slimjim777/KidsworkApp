@@ -106,16 +106,13 @@
 
         <ul id="r-action-list" class="list">
             <li class="list-divider">Already Registered</li>    
-    {{#if action_in}}
             {{#each signed_in}}
             <li>{{this.name}}<div class="toggle active"><div class="toggle-handle"></div></div></li>
             {{/each}}
-    {{else}}
             {{#each signed_out}}
             <li>{{this.name}}<div class="toggle"><div class="toggle-handle"></div></div></li>
             {{/each}}
         </ul>
-    {{/if}}
         
     </div>
 </script>

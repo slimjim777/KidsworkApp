@@ -158,7 +158,9 @@ var controller = {
     // Child selected by click
     childClicked: function(ev, el)
     {
-        ev.preventDefault();
+        if (ev) {
+            ev.preventDefault();
+        }
          
         // Check if the child is already in the signed-in/out list
         var found = false;
@@ -197,18 +199,66 @@ var controller = {
     // Get the child details using the tag number
     childTagEnter: function(ev) {
         // Add the child to the list of people to sign-in/out
-        alert("Not yet implemented");
+        ev.preventDefault();
+        if (ev.keyCode==13) {
+            var childTag = $('#r-kid').val();
+            this.childByTag(childTag);
+        }
     },
 
     // Get the child details using the tag number
     childByTag: function(tag) {
-        // Add the child to the list of people to sign-in/out
-        alert("Not yet implemented");
+        // Get the item for the child
+        var item = $('#k-' + tag);
+        console.log(item);
+        if (item.length !== 0) {
+            // Act as though the child was clicked
+            this.childClicked(null, item[0]);
+        }
     },
     
     // Register the children in the action list
     register: function() {
-        alert("register: Not yet implemented");
+        var register_data = {
+            family_number: context.familyTag,
+            event_id: context.eventId,
+            people: []      
+        };
+        
+        for (i in context.action_list) {
+            p = context.action_list[i];
+            console.log(p);
+            register_data.people.push(p.tagnumber);
+        }
+        
+        var url;
+        if (context.action === 'Sign-In') {
+            url = BASE_URL + "sign-in";
+        } else {
+            url = BASE_URL + "sign-out";
+        }
+
+        var request = $.ajax({
+            type: "POST",
+            url: url,
+            contentType:"application/json",
+            dataType: "json",
+            data: JSON.stringify(register_data),
+            success: function(data) {
+                if ('error' in data) {
+                    showMessage($('#f-message'), data.error, false, false);
+                } else {
+                    // Store the family details and call the register view
+                    showMessage($('#f-message'), "Done! Next!", true, false);
+                    window.location.hash = '#family'; 
+                }
+            },
+            error: function(error) {
+                showMessage($('#f-message'), error.statusText, false);
+                return null;
+            }
+        });        
+        
     }
 
 };
@@ -243,7 +293,7 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // Read NFC tag
 	var tag = nfcEvent.tag;
 	var tagData = nfc.bytesToString(tag.ndefMessage[0].payload); // TODO make this less fragile 
-	alert(tagData);
+	//alert(tagData);
 
     // Analyse the prefix and tag Number
     var groups = tagData.match(/(^[FCL])(\d+$)/);
@@ -257,16 +307,16 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     tagPrefix = groups[1];
     tagNumber = groups[2];
 	
-	if (($('f-familyid')) && (tagPrefix === 'F')) {
+	if ((hash.match(/^#family/)) && (tagPrefix === 'F')) {
 	    // We're on the family screen and are expecting a family tag
 	    controller.familyByTag(tagNumber);
-	} else if (($('f-familyid')) && (tagPrefix !== 'F')) {
+	} else if ((hash.match(/^#family/)) && (tagPrefix !== 'F')) {
 	    // We're on the family screen and got an unexpected tag
 	    showMessage($('f-message'), "The tag number is invalid: " + tagData, false, false);
-	} else if (($('r-kid')) && (tagPrefix === 'C')) {
+	} else if ((hash.match(/^#register/)) && (tagPrefix === 'C')) {
 	    // We're on the register screen and are expecting a child tag
 	    controller.childByTag(tagNumber);
-	} else if (($('r-kid')) && (tagPrefix !== 'C')) {
+	} else if ((hash.match(/^#register/)) && (tagPrefix !== 'C')) {
 	    // We're on the family screen and got an unexpected tag
 	    showMessage($('r-message'), "The tag number is invalid: " + tagData, false, false);
     } else {
