@@ -83,10 +83,9 @@
             <li>{{parent_name}} ({{tagnumber}})</li>
             <li class="list-divider">Children</li>
             {{#each children}}
-            <li><a href="#register" onclick="controller.childClicked(this)" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<span class="count">+</span></a></li>
+            <li><a href="#register" onclick="controller.childClicked(event, this)" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<span class="count">+</span></a></li>
             {{/each}}
-        </ul>   
-
+        </ul>
 
         <div class="highlight">
         <input id="r-kid" type="search" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)" />
@@ -96,22 +95,24 @@
         {{else}}
                 <li class="list-divider">To Sign-Out</li>
         {{/if}}
-                {{#each signed_in}}
-                <li><a href="#register" id="k-{{this.tagnumber}}-act" name="k-{{this.personid}}-act" >{{this.name}}<span class="count">-</span></a></li>
+                {{#each action_list}}
+                <li><a href="#register" id="k-{{this.tagnumber}}-act" name="k-{{this.personid}}-act">{{this.name}}<span class="count">x</span></a></li>
                 {{/each}}
-
             </ul>
 
-            <a class="button-main button-block">{{action}}</a>
+            <a class="button-main button-block" onclick="controller.register()">{{action}}</a>
         
         </div>
-    
-    {{#if action_in}}
-    {{else}}
+
         <ul id="r-action-list" class="list">
-            <li class="list-divider">Already Signed-Out</li>
+            <li class="list-divider">Already Registered</li>    
+    {{#if action_in}}
+            {{#each signed_in}}
+            <li>{{this.name}}<div class="toggle active"><div class="toggle-handle"></div></div></li>
+            {{/each}}
+    {{else}}
             {{#each signed_out}}
-            <li><a href="#register" id="k-{{this.tagnumber}}-act" name="k-{{this.personid}}-act" >{{this.name}}<span class="count">-</span></a></li>
+            <li>{{this.name}}<div class="toggle"><div class="toggle-handle"></div></div></li>
             {{/each}}
         </ul>
     {{/if}}

@@ -8,6 +8,7 @@ var context = {
     familyTag: null,
     family: null,
     action: null,
+    action_list: null,
     storeEvent: function(eventid, name) {
         this.eventId = eventid;
         this.eventName = name;
@@ -76,8 +77,10 @@ var app = {
             overviewData = {};
         }
         overviewData.action = context.action;
+        context.action_list = [];
+        overviewData.action_list = [];
         if (context.action === 'Sign-In') {
-            overviewData.action_in = true;     
+            overviewData.action_in = true;
         } else {
             overviewData.action_in = false;
         }
@@ -153,32 +156,42 @@ var controller = {
     },
     
     // Child selected by click
-    childClicked: function(el)
+    childClicked: function(ev, el)
     {
-        var list;
-        if (context.action === 'Sign-In') {
-            list = context.family.signed_in;
-        } else {
-            list = context.family.signed_out;
-        }
-    
+        ev.preventDefault();
+         
         // Check if the child is already in the signed-in/out list
         var found = false;
-        for (var i in list) {
-            e = list[i];
+        for (var i in context.action_list) {
+            e = context.action_list[i];
             if (el.id == 'k-' + e.tagnumber) {
                 found = true;
             }
         }
     
-        // Add the child to the sign-in/out list (if not already there)
+        // Add the child to the sign-in/out list (if not already there)           
+        var $act_list = $('#r-action-list');
         if (!found) {
-            list.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).text().replace('+','')});
-            console.log(list);
-            var item = '<li><a href="#" name="' + el.name + '-act" id="' + el.id + state + '-act"' + '>'+ $(el).html().replace('+','x') +'</a></li>';
-            var action_list = $('#r-action-list');
-            action_list.append(item);
+            context.action_list.push({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).text().replace('+','')});
+            var item = '<li><a href="#register" name="' + el.name + '-act" id="' + el.id + '-act"' + ' onclick="controller.childRemove(event, this)">'+ $(el).html().replace('+','x') +'</a></li>';
+            $act_list.append(item);
         }
+    },
+    
+    // Child removed from action list by click
+    childRemove: function(ev, el)
+    {
+        ev.preventDefault();
+    
+        // Remove the record from the action list
+        //var found = false;
+        for (var i in context.action_list) {
+            e = context.action_list[i];
+            if (el.id == 'k-' + e.tagnumber + '-act') {
+                context.action_list.splice(i,1);
+            }
+        }
+        $(el).parent().remove();
     },
 
     // Get the child details using the tag number
@@ -191,8 +204,12 @@ var controller = {
     childByTag: function(tag) {
         // Add the child to the list of people to sign-in/out
         alert("Not yet implemented");
-    }
+    },
     
+    // Register the children in the action list
+    register: function() {
+        alert("register: Not yet implemented");
+    }
 
 };
 
@@ -223,8 +240,7 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     });
 	
   } else {
-    // read
-	console.log("Reading");
+    // Read NFC tag
 	var tag = nfcEvent.tag;
 	var tagData = nfc.bytesToString(tag.ndefMessage[0].payload); // TODO make this less fragile 
 	alert(tagData);
@@ -276,9 +292,9 @@ function showMessage(elem, words, success, hold) {
 
     el.html('<h3>' + words + '</h3>');
     if (!hold) {
-        el.slideDown('slow').delay(1000).slideToggle('slow', function() {$(this).remove()});
+        el.slideDown('slow').delay(1000).slideToggle('slow', function() {$(this).remove();});
     } else {
-        el.slideDown('slow', function() {$(this).remove()});
+        el.slideDown('slow', function() {$(this).remove();});
     }
     
 }

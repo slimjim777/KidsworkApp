@@ -7,8 +7,6 @@ var FamilyView = function(family) {
     this.initialize();
  
     this.render = function() {
-        console.log(JSON.stringify(family));
-    
         this.el.html(FamilyView.template(family));
         return this;
     };

@@ -63,3 +63,11 @@ div.highlight {
     padding: 5px;
     border: 8px solid #61b832;
 }
+
+.toggle.active {
+    content: "Out";
+}
+
+.toggle.active:before {
+    content: "In";
+}
