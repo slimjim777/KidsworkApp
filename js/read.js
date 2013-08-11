@@ -6,6 +6,7 @@ var context = {
     eventName: null,
     familyId: null,
     familyTag: null,
+    family: null,
     action: null,
     storeEvent: function(eventid, name) {
         this.eventId = eventid;
@@ -68,7 +69,19 @@ var app = {
         $('body').html(page);
         //slider.slidePage($(page));
     } else if (hash.match(/^#register/)) {
-        this.registerPage = new RegisterView({}).render();
+        var registerData;
+        if (context.family) {
+            overviewData = context.family;
+        } else {
+            overviewData = {};
+        }
+        overviewData.action = context.action;
+        if (context.action === 'Sign-In') {
+            overviewData.action_in = true;     
+        } else {
+            overviewData.action_in = false;
+        }
+        this.registerPage = new RegisterView(overviewData).render();
         page = this.registerPage.el;
         $('body').html(page);
         //slider.slidePage($(page));
@@ -123,9 +136,12 @@ var controller = {
                 if ('error' in data) {
                     showMessage($('#f-message'), data.error, false, false);
                 } else {
-                    app.registerPage = new RegisterView(data).render();
-                    var page = app.registerPage.el;
-                    $('body').html(page);
+                    // Store the family details and call the register view
+                    context.family = data;
+                    window.location.hash = '#register';
+                    //app.registerPage = new RegisterView(data).render();
+                    //var page = app.registerPage.el;
+                    //$('body').html(page);
                     //slider.slidePage($(page));  
                 }
             },
@@ -139,20 +155,29 @@ var controller = {
     // Child selected by click
     childClicked: function(el)
     {
-        // Add the child to the sign-in list (if not already there)
+        var list;
+        if (context.action === 'Sign-In') {
+            list = context.family.signed_in;
+        } else {
+            list = context.family.signed_out;
+        }
+    
+        // Check if the child is already in the signed-in/out list
         var found = false;
-        for (var i in signedin) {
-            e = signedin[i];
+        for (var i in list) {
+            e = list[i];
             if (el.id == 'k-' + e.tagnumber) {
                 found = true;
             }
         }
     
+        // Add the child to the sign-in/out list (if not already there)
         if (!found) {
-            signedin.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).html()});
-            var item = '<li><a href="#" name="' + el.name + '-in" id="' + el.id + '-in"' + '>'+ $(el).html() +'</a></li>';
-            var list_in = $('#r-list-in');
-            list_in.append(item);
+            list.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).text().replace('+','')});
+            console.log(list);
+            var item = '<li><a href="#" name="' + el.name + '-act" id="' + el.id + state + '-act"' + '>'+ $(el).html().replace('+','x') +'</a></li>';
+            var action_list = $('#r-action-list');
+            action_list.append(item);
         }
     },
 
@@ -235,7 +260,11 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
   
 }
 
-function showMessage(el, words, success, hold) {
+function showMessage(elem, words, success, hold) {
+    $('div.content').prepend('<h3 id="message"></h3');
+    var el = $('#message');
+    el.hide();
+
     if (success) {
         el.removeClass( "message error" );
         el.addClass( "message success" );
@@ -247,8 +276,9 @@ function showMessage(el, words, success, hold) {
 
     el.html('<h3>' + words + '</h3>');
     if (!hold) {
-        el.slideDown('slow').delay(1000).slideToggle('slow');
+        el.slideDown('slow').delay(1000).slideToggle('slow', function() {$(this).remove()});
     } else {
-        el.slideDown('slow');
+        el.slideDown('slow', function() {$(this).remove()});
     }
+    
 }

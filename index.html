@@ -73,7 +73,7 @@
 <!-- Register -->
 <script id="register-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
-        <a href='#' class="button header-button header-button-left">Back</a>
+        <a href='#family' class="button header-button header-button-left">Back</a>
         <h1 class="title">Register Children</h1>
     </header>
     <div class="content">
@@ -83,11 +83,39 @@
             <li>{{parent_name}} ({{tagnumber}})</li>
             <li class="list-divider">Children</li>
             {{#each children}}
-            <li><a href="#register" data-transition="slide-in" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<span class="chevron"></span></a></li>
+            <li><a href="#register" onclick="controller.childClicked(this)" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<span class="count">+</span></a></li>
             {{/each}}
         </ul>   
 
+
+        <div class="highlight">
         <input id="r-kid" type="search" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)" />
+            <ul id="r-action-list" class="list">
+        {{#if action_in}}
+                <li class="list-divider">To Sign-In</li>
+        {{else}}
+                <li class="list-divider">To Sign-Out</li>
+        {{/if}}
+                {{#each signed_in}}
+                <li><a href="#register" id="k-{{this.tagnumber}}-act" name="k-{{this.personid}}-act" >{{this.name}}<span class="count">-</span></a></li>
+                {{/each}}
+
+            </ul>
+
+            <a class="button-main button-block">{{action}}</a>
+        
+        </div>
+    
+    {{#if action_in}}
+    {{else}}
+        <ul id="r-action-list" class="list">
+            <li class="list-divider">Already Signed-Out</li>
+            {{#each signed_out}}
+            <li><a href="#register" id="k-{{this.tagnumber}}-act" name="k-{{this.personid}}-act" >{{this.name}}<span class="count">-</span></a></li>
+            {{/each}}
+        </ul>
+    {{/if}}
+        
     </div>
 </script>
 
