@@ -50,9 +50,15 @@ var app = {
   route: function() {
     var hash = window.location.hash;
     var page;
+    console.log("Route:");
     console.log(hash);
     
     if (!hash) {
+        this.homePage = new HomeView({}).render()
+        page = this.homePage.el;
+        $('body').html(page);
+        //slider.slidePage($(page));          
+    } else if (hash.match(/^#events/)) {
         controller.events();
         //this.eventsPage = new EventsView({}).render();
         //var page = this.eventsPage.el;
@@ -88,6 +94,10 @@ var app = {
         page = this.registerPage.el;
         $('body').html(page);
         //slider.slidePage($(page));
+    } else if (hash.match(/^#scan/)) {
+        alert("Not yet implemented");
+    } else if (hash.match(/^#write_tag/)) {
+        alert("Not yet implemented");
     }
     
   }
@@ -97,19 +107,20 @@ var app = {
 var controller = {
 
     events: function() {
-        //$('body').append('Please wait...');
+        spinner('show');
         if (!app.eventsPage) {
             $.getJSON(BASE_URL + 'events', function(data) {
                 app.eventsPage = new EventsView(data.result).render();
                 page = app.eventsPage.el;
                 $('body').html(page);
                 //slider.slidePage($(page));  
-            
+                spinner('hide');
             });
         } else {
             // Show the events that were previously fetched
             page = app.eventsPage.el;
             $('body').html(page);
+            spinner('hide');
         }
     },
     
@@ -123,6 +134,7 @@ var controller = {
     
     // Get the family details using the tag number
     familyByTag: function(tag) {
+        spinner('show');
         context.familyTag = tag;
         var family_data = {
             "family_number": context.familyTag,
@@ -138,10 +150,12 @@ var controller = {
             success: function(data) {
                 if ('error' in data) {
                     showMessage($('#f-message'), data.error, false, false);
+                    spinner('hide');
                 } else {
                     // Store the family details and call the register view
                     context.family = data;
                     window.location.hash = '#register';
+                    spinner('hide');
                     //app.registerPage = new RegisterView(data).render();
                     //var page = app.registerPage.el;
                     //$('body').html(page);
@@ -150,6 +164,7 @@ var controller = {
             },
             error: function(error) {
                 showMessage($('#f-message'), error.statusText, false);
+                spinner('hide');
                 return null;
             }
         });   
@@ -210,7 +225,6 @@ var controller = {
     childByTag: function(tag) {
         // Get the item for the child
         var item = $('#k-' + tag);
-        console.log(item);
         if (item.length !== 0) {
             // Act as though the child was clicked
             this.childClicked(null, item[0]);
@@ -219,6 +233,7 @@ var controller = {
     
     // Register the children in the action list
     register: function() {
+        spinner('show');
         var register_data = {
             family_number: context.familyTag,
             event_id: context.eventId,
@@ -227,7 +242,6 @@ var controller = {
         
         for (i in context.action_list) {
             p = context.action_list[i];
-            console.log(p);
             register_data.people.push(p.tagnumber);
         }
         
@@ -247,18 +261,42 @@ var controller = {
             success: function(data) {
                 if ('error' in data) {
                     showMessage($('#f-message'), data.error, false, false);
+                    spinner('hide');
                 } else {
                     // Store the family details and call the register view
                     showMessage($('#f-message'), "Done! Next!", true, false);
-                    window.location.hash = '#family'; 
+                    window.location.hash = '#family';
+                    spinner('hide');
                 }
             },
             error: function(error) {
                 showMessage($('#f-message'), error.statusText, false);
+                spinner('hide');
                 return null;
             }
         });        
         
+    },
+    
+    spinner: function() {
+        return '<div id="circularG">' +
+                '<div id="circularG_1" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_2" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_3" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_4" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_5" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_6" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_7" class="circularG">' +
+                '</div>' +
+                '<div id="circularG_8" class="circularG">' +
+                '</div>' +
+                '</div>';
     }
 
 };
@@ -347,4 +385,12 @@ function showMessage(elem, words, success, hold) {
         el.slideDown('slow', function() {$(this).remove();});
     }
     
+}
+
+function spinner(act) {
+    if (act === "show") {
+        $('div.content').prepend(controller.spinner);
+    } else {
+        $('#circularG').remove();
+    }
 }

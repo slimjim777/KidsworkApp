@@ -12,9 +12,34 @@
 
 <body>
 
+
+<!-- Home -->
+<script id="home-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <h1 class="title">Kidswork Registration</h1>
+    </header>
+    <div id="home" class="content">
+        
+        <table class="home">
+            <tr>
+                <td><a href="#events">Events</a></td>
+            </tr>
+            <tr>
+                <td><a href="#scan">Scan Tag</a></td>
+            </tr>
+            <tr>
+                <td><a href="#write_tag">Write Tag</a></td>
+            </tr>
+        
+        </table>    
+    
+    </div>        
+</script>
+
 <!-- Events -->
 <script id="events-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
+        <a href='#' class="button header-button header-button-left">Back</a>
         <h1 class="title">Events</h1>
     </header>
     <div id="events" class="content">
@@ -30,20 +55,20 @@
 <!-- Actions -->
 <script id="overview-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
-        <a href='#' class="button header-button header-button-left">Back</a>
+        <a href='#events' class="button header-button header-button-left">Back</a>
         <h1 class="title">{{name}}</h1>
     </header>
     <nav class="bar-tab">
       <ul class="tab-inner">
         <li class="tab-item">
-          <a href="#family" onclick="context.storeAction('Sign-In')">
-            <img class="tab-icon" src="img/icon-profile.png">
+          <a href="#family" onclick="context.storeAction('Sign-In')" class="icon-gear">
+            <img class="tab-icon" src="img/signin.png" />
             <div class="tab-label">Sign-In</div>
           </a>
         </li>
         <li class="tab-item">
           <a href="#family" onclick="context.storeAction('Sign-Out')">
-            <img class="tab-icon" src="img/icon-messages.png">
+            <img class="tab-icon" src="img/signout.png" />
             <div class="tab-label">Sign-Out</div>
           </a>
         </li>
@@ -121,6 +146,7 @@
 <script type="text/javascript" src="lib/handlebars.js"></script>      
 <script type="text/javascript" src="lib/pageslider.js"></script>      
 <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/HomeView.js"></script>
 <script type="text/javascript" src="js/EventsView.js"></script>
 <script type="text/javascript" src="js/FamilyView.js"></script>
 <script type="text/javascript" src="js/RegisterView.js"></script>
