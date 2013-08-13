@@ -20,18 +20,11 @@
     </header>
     <div id="home" class="content">
         
-        <table class="home">
-            <tr>
-                <td><a href="#events">Events</a></td>
-            </tr>
-            <tr>
-                <td><a href="#scan">Scan Tag</a></td>
-            </tr>
-            <tr>
-                <td><a href="#write_tag">Write Tag</a></td>
-            </tr>
-        
-        </table>    
+        <div class="action-group">
+            <a href="#events" class="button-main button-block">Events</a>
+            <a href="#scan" class="button-block">Scan Tag</a>
+            <a href="#write_tag" class="button-block">Write Tag</a>
+        </div>
     
     </div>        
 </script>
@@ -39,11 +32,10 @@
 <!-- Events -->
 <script id="events-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
-        <a href='#' class="button header-button header-button-left">Back</a>
+        <a href="#" class="button header-button header-button-left">Back</a>
         <h1 class="title">Events</h1>
     </header>
     <div id="events" class="content">
-        
         <ul class="list">
             {{#.}}
             <li><a href="#overview" data-transition="slide-in" onclick="context.storeEvent({{this.event_id}},'{{this.name}}')">{{this.name}}<span class="chevron"></span></a></li>
@@ -87,7 +79,11 @@
     </header>
     <div class='content'>
         <div id="f-message"></div>
-        <div><h3 class="instructions">{{action}} for {{eventName}}</h3></div>   
+        {{#if action_in}}
+        <div><h3 class="instructions"><span class="in">&#12484;</span> {{action}} for {{eventName}}</h3></div>
+        {{else}}
+        <div><h3 class="instructions"><span class="out">&#10006;</span> {{action}} for {{eventName}}</h3></div>        
+        {{/if}}  
         <input id="f-familyid" type="search" placeholder="Scan or enter the Family tag" onkeyup="controller.familyTagEnter(event)" />
         <div class="input-row">
             <img src="img/scan.png" alt="scan tag" class="center" />
@@ -106,13 +102,24 @@
         <ul class="list inset">
             <li class="list-divider">Family</li>
             <li>{{parent_name}} ({{tagnumber}})</li>
+        {{#if action_in}}
             <li class="list-divider">Children</li>
             {{#each children}}
             <li><a href="#register" onclick="controller.childClicked(event, this)" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<span class="count">+</span></a></li>
             {{/each}}
+        {{else}}
+            <li class="list-divider">Signed-In</li>
+            {{#each signed_in}}
+            <li><a href="#register" onclick="controller.childClicked(event, this)" id="k-{{this.tagnumber}}" name="k-{{this.personid}}" >{{this.name}}<div class="toggle active"><div class="toggle-handle"></div></div></a></li>
+            {{/each}}        
+        {{/if}}
         </ul>
 
+        {{#if action_in}}
         <div class="highlight">
+        {{else}}
+        <div class="highlight-out">
+        {{/if}}
         <input id="r-kid" type="search" placeholder="Scan or enter the Child tag" onkeyup="controller.childTagEnter(event)" />
             <ul id="r-action-list" class="list">
         {{#if action_in}}
@@ -128,7 +135,8 @@
             <a class="button-main button-block" onclick="controller.register()">{{action}}</a>
         
         </div>
-
+        
+        {{#if action_in}}
         <ul id="r-action-list" class="list">
             <li class="list-divider">Already Registered</li>    
             {{#each signed_in}}
@@ -138,6 +146,7 @@
             <li>{{this.name}}<div class="toggle"><div class="toggle-handle"></div></div></li>
             {{/each}}
         </ul>
+        {{/if}}
         
     </div>
 </script>
@@ -151,7 +160,7 @@
 <script type="text/javascript" src="js/FamilyView.js"></script>
 <script type="text/javascript" src="js/RegisterView.js"></script>
 <script type="text/javascript" src="js/OverviewView.js"></script>
-<script type="text/javascript" src="js/read.js"></script>
+<script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 
 

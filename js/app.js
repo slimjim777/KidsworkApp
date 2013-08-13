@@ -53,28 +53,29 @@ var app = {
     console.log("Route:");
     console.log(hash);
     
+    var action_in;
+    if (context.action === 'Sign-In') {
+        action_in = true;
+    } else {
+        action_in = false;
+    }    
+    
     if (!hash) {
         this.homePage = new HomeView({}).render()
         page = this.homePage.el;
         $('body').html(page);
-        //slider.slidePage($(page));          
     } else if (hash.match(/^#events/)) {
         controller.events();
-        //this.eventsPage = new EventsView({}).render();
-        //var page = this.eventsPage.el;
-        //slider.slidePage($(page));          
     } else if (hash.match(/^#family/)) {
-        var familyData = {action: context.action, eventName: context.eventName};
+        var familyData = {action: context.action, eventName: context.eventName, action_in:action_in };
         this.familyPage = new FamilyView(familyData).render();
         page = this.familyPage.el;
         $('body').html(page);
-        //slider.slidePage($(page));          
     } else if (hash.match(/^#overview/)) {
         var overviewData = {name: context.eventName, eventId: context.eventId};
         this.overviewPage = new OverviewView(overviewData).render();
         page = this.overviewPage.el;
         $('body').html(page);
-        //slider.slidePage($(page));
     } else if (hash.match(/^#register/)) {
         var registerData;
         if (context.family) {
@@ -83,17 +84,17 @@ var app = {
             overviewData = {};
         }
         overviewData.action = context.action;
+        overviewData.action_in = action_in;
         context.action_list = [];
         overviewData.action_list = [];
         if (context.action === 'Sign-In') {
-            overviewData.action_in = true;
+            overviewData.action_in = action_in;
         } else {
-            overviewData.action_in = false;
+            overviewData.action_in = action_in;
         }
         this.registerPage = new RegisterView(overviewData).render();
         page = this.registerPage.el;
         $('body').html(page);
-        //slider.slidePage($(page));
     } else if (hash.match(/^#scan/)) {
         alert("Not yet implemented");
     } else if (hash.match(/^#write_tag/)) {
@@ -109,11 +110,11 @@ var controller = {
     events: function() {
         spinner('show');
         if (!app.eventsPage) {
+            console.log(BASE_URL + 'events');
             $.getJSON(BASE_URL + 'events', function(data) {
                 app.eventsPage = new EventsView(data.result).render();
                 page = app.eventsPage.el;
                 $('body').html(page);
-                //slider.slidePage($(page));  
                 spinner('hide');
             });
         } else {
@@ -156,10 +157,6 @@ var controller = {
                     context.family = data;
                     window.location.hash = '#register';
                     spinner('hide');
-                    //app.registerPage = new RegisterView(data).render();
-                    //var page = app.registerPage.el;
-                    //$('body').html(page);
-                    //slider.slidePage($(page));  
                 }
             },
             error: function(error) {
