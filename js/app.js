@@ -1,5 +1,4 @@
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
-var slider = new PageSlider($("body"));
 
 var context = {
     eventId: null,
@@ -72,27 +71,24 @@ var app = {
         page = this.familyPage.el;
         $('body').html(page);
     } else if (hash.match(/^#overview/)) {
-        var overviewData = {name: context.eventName, eventId: context.eventId};
-        this.overviewPage = new OverviewView(overviewData).render();
-        page = this.overviewPage.el;
-        $('body').html(page);
+        controller.registrations();
     } else if (hash.match(/^#register/)) {
         var registerData;
         if (context.family) {
-            overviewData = context.family;
+            registerData = context.family;
         } else {
-            overviewData = {};
+            registerData = {};
         }
-        overviewData.action = context.action;
-        overviewData.action_in = action_in;
+        registerData.action = context.action;
+        registerData.action_in = action_in;
         context.action_list = [];
-        overviewData.action_list = [];
+        registerData.action_list = [];
         if (context.action === 'Sign-In') {
-            overviewData.action_in = action_in;
+            registerData.action_in = action_in;
         } else {
-            overviewData.action_in = action_in;
+            registerData.action_in = action_in;
         }
-        this.registerPage = new RegisterView(overviewData).render();
+        this.registerPage = new RegisterView(registerData).render();
         page = this.registerPage.el;
         $('body').html(page);
     } else if (hash.match(/^#scan/)) {
@@ -124,7 +120,50 @@ var controller = {
             spinner('hide');
         }
     },
+
+    // Get the registrations for the event
+    registrations: function(tag) {
+        spinner('show');
+        var reg_data = {
+            "event_id": context.eventId
+        };
+        
+        var overviewData = {name: context.eventName, eventId: context.eventId};
     
+        var request = $.ajax({
+            type: "POST",
+            url: BASE_URL + "registrations",
+            contentType:"application/json",
+            dataType: "json",
+            data: JSON.stringify(reg_data),
+            success: function(data) {
+                if ('error' in data) {
+                    showMessage($('#f-message'), data.error, false, false);
+                    spinner('hide');
+                } else {
+                    // Got the registrations
+                    overviewData.records = data.result;
+                    app.overviewPage = new OverviewView(overviewData).render();
+                    page = app.overviewPage.el;
+                    $('body').html(page);
+                    
+                    // Format the list
+                    var options = {
+                        valueNames: ['name', 'group','team','school_year','stage']
+                    };
+                    var list = new List('registrations', options);
+                    spinner('hide');
+                }
+            },
+            error: function(error) {
+                showMessage($('#f-message'), error.statusText, false);
+                spinner('hide');
+                return null;
+            }
+        });   
+    },
+
+
     // Family tag entered manually
     familyTagEnter: function(ev) {
         if (ev.keyCode==13) {

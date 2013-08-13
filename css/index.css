@@ -270,3 +270,24 @@ transform:scale(.3)}
 
 }
 
+
+/* Registrations */
+
+#registrations table {
+    border-collapse:collapse;
+	border-spacing:0;
+	width: 90%;
+	margin: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#registrations th {
+    background-color: #eee;
+}
+
+#registrations td, #registrations th  {
+    border: 1px solid #ccc;
+    padding: 2px;
+    text-align: center;
+}

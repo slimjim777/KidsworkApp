@@ -44,12 +44,25 @@
     </div>        
 </script>
 
-<!-- Actions -->
+<!-- Overview/Actions -->
 <script id="overview-tpl" type="text/x-handlebars-template">
     <header class="bar-title">
         <a href='#events' class="button header-button header-button-left">Back</a>
         <h1 class="title">{{name}}</h1>
     </header>
+    <div class="bar-standard bar-header-secondary">
+      <ul class="segmented-controller">
+        <li class="active">
+          <a href="#overview">All</a>
+        </li>
+        <li>
+          <a href="#overview">Rising Stars</a>
+        </li>
+        <li>
+          <a href="#overview">ROAR</a>
+        </li>
+      </ul>    
+    </div>
     <nav class="bar-tab">
       <ul class="tab-inner">
         <li class="tab-item">
@@ -67,7 +80,30 @@
       </ul>
     </nav>    
     <div class='content'>
-                
+        <div id="registrations">
+        <table>
+            <thead>
+            <tr>
+                <th class="sort" data-sort="name">Name</th>
+                <th class="sort" data-sort="group">Group</th>
+                <th class="sort" data-sort="team">Team</th>
+                <th class="sort" data-sort="school_year">School Year</th>
+                <th class="sort" data-sort="stage">Status</th>                
+            </tr>
+            </thead>
+            <tbody class="list">
+            {{#each records}}
+            <tr>
+                <td class="name">{{name}}</td>
+                <td class="group">{{group}}</td>
+                <td class="team">{{team}}</td>
+                <td class="school_year">{{school_year}}</td>
+                <td class="stage">{{stage}}</li>
+            </tr>
+            {{/each}}
+            </tbody>
+        </table>
+        </div>
     </div>
 </script>
 
@@ -153,7 +189,7 @@
 
 <script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="lib/handlebars.js"></script>      
-<script type="text/javascript" src="lib/pageslider.js"></script>      
+<script type="text/javascript" src="lib/list.min.js"></script>      
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/HomeView.js"></script>
 <script type="text/javascript" src="js/EventsView.js"></script>
