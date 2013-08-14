@@ -1,4 +1,5 @@
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
+var MIMETYPE = 'text/kidswork';
 
 var context = {
     eventId: null,
@@ -371,14 +372,21 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     //var newUrl = actions[action].format(option);
     //console.log("New URL", newUrl);
     //var ndefRecord = ndef.uriRecord(newUrl); // support more types.. TODO
+    
+    // Bail out if the tagToWrite isn't set
+    if (!context.tagToWrite) {
+        this.writeTag();
+    }
+    
+    // Format the NDEF record
     var ndefRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(context.tagToWrite));
     
     nfc.write([ndefRecord], function () {
-      navigator.notification.vibrate(100);
-      console.log("Written", ndefRecord);
-      alert("Woohoo!  Your tag is ready.");
+        navigator.notification.vibrate(100);
+        console.log("Written", ndefRecord);
+        alert("Woohoo!  Your tag is ready.");
     }, function (reason) {
-      console.log("Inlay write failed");
+        showMessage(null, "Failed to write tag: " + JSON.stringify(reason), false, false);
     });
 	
   } else {
