@@ -382,9 +382,8 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     var ndefRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(context.tagToWrite));
     
     nfc.write([ndefRecord], function () {
-        navigator.notification.vibrate(100);
-        console.log("Written", ndefRecord);
-        alert("Woohoo!  Your tag is ready.");
+        navigator.notification.vibrate(500);
+        showMessage(null, "Tag written successfully with code " + context.tagToWrite, true, false);
     }, function (reason) {
         showMessage(null, "Failed to write tag: " + JSON.stringify(reason), false, false);
     });
