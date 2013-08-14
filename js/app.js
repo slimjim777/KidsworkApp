@@ -8,6 +8,7 @@ var context = {
     family: null,
     action: null,
     action_list: null,
+    tagToWrite: null,
     storeEvent: function(eventid, name) {
         this.eventId = eventid;
         this.eventName = name;
@@ -60,7 +61,7 @@ var app = {
     }    
     
     if (!hash) {
-        this.homePage = new HomeView({}).render()
+        this.homePage = new HomeView({}).render();
         page = this.homePage.el;
         $('body').html(page);
     } else if (hash.match(/^#events/)) {
@@ -93,8 +94,10 @@ var app = {
         $('body').html(page);
     } else if (hash.match(/^#scan/)) {
         alert("Not yet implemented");
-    } else if (hash.match(/^#write_tag/)) {
-        alert("Not yet implemented");
+    } else if (hash.match(/^#writetag/)) {
+        this.writePage = new WriteTagView({}).render();
+        page = this.writePage.el;
+        $('body').html(page);        
     }
     
   }
@@ -333,6 +336,21 @@ var controller = {
                 '<div id="circularG_8" class="circularG">' +
                 '</div>' +
                 '</div>';
+    },
+    
+    writeTag: function() {
+        context.tagToWrite = null;
+        var prefix = $("input[name=w-radio]:checked").val();
+        var tag = $('#w-tag').val().replace(' ','');
+        tag = $.trim(tag);
+        
+        if (!tag) {
+            showMessage(null, "Dude, where's the tag number?", false, false);
+            return;
+        }
+        
+        context.tagToWrite = tag;
+        showMessage(null, "Scan the tag to write code '" + prefix + tag + "'", true, true);
     }
 
 };
@@ -344,17 +362,17 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
   
   var hash = window.location.hash;
   if (!hash) {
-    alert('Ignore scan for events page');
+    alert('Ignore scan for home page');
     return;
   }
   
-  if (action !== "") { // do we have an action to write or not?
+  if (hash.match(/^#writetag/)) { // do we have an action to write or not?
 	// write
-    // from https://github.com/don/phonegap-nfc-writer/blob/master/assets/www/main.js
-    var newUrl = actions[action].format(option);
-    console.log("New URL", newUrl);
-    var ndefRecord = ndef.uriRecord(newUrl); // support more types.. TODO
-
+    //var newUrl = actions[action].format(option);
+    //console.log("New URL", newUrl);
+    //var ndefRecord = ndef.uriRecord(newUrl); // support more types.. TODO
+    var ndefRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(context.tagToWrite));
+    
     nfc.write([ndefRecord], function () {
       navigator.notification.vibrate(100);
       console.log("Written", ndefRecord);
@@ -418,7 +436,7 @@ function showMessage(elem, words, success, hold) {
     if (!hold) {
         el.slideDown('slow').delay(1000).slideToggle('slow', function() {$(this).remove();});
     } else {
-        el.slideDown('slow', function() {$(this).remove();});
+        el.slideDown('slow').delay(5000).slideToggle('slow', function() {$(this).remove();});
     }
     
 }

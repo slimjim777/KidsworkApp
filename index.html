@@ -23,7 +23,7 @@
         <div class="action-group">
             <a href="#events" class="button-main button-block">Events</a>
             <a href="#scan" class="button-block">Scan Tag</a>
-            <a href="#write_tag" class="button-block">Write Tag</a>
+            <a href="#writetag" class="button-block">Write Tag</a>
         </div>
     
     </div>        
@@ -187,6 +187,30 @@
     </div>
 </script>
 
+<!-- Write Tag -->
+<script id="write-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <a href="#" class="button header-button header-button-left">Back</a>
+        <h1 class="title">Write Tag</h1>
+    </header>
+    <div class="content">
+        <div class="inset-form">
+            <fieldset>
+                <input type="radio" name="w-radio" value="F" id="w-family" checked="checked" /><label>Family</label><br />
+                <input type="radio" name="w-radio" value="C" id="w-child" /><label>Child</label><br />
+                <input type="radio" name="w-radio" value="L" id="w-leader" /><label>Leader</label><br />
+            <fieldset>
+            <br />
+            <div class="input-row">
+                <input type="text" name="w-tag" id="w-tag" placeholder="Enter the tag number" /> 
+            </div>
+            <div class="input-row">
+                <a class="button-main button-block" onclick="controller.writeTag()">Submit</a>
+            </div>
+        </div>
+    </div>        
+</script>
+
 <script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="lib/handlebars.js"></script>      
 <script type="text/javascript" src="lib/list.min.js"></script>      
@@ -196,6 +220,7 @@
 <script type="text/javascript" src="js/FamilyView.js"></script>
 <script type="text/javascript" src="js/RegisterView.js"></script>
 <script type="text/javascript" src="js/OverviewView.js"></script>
+<script type="text/javascript" src="js/WriteTagView.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 
