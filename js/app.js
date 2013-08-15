@@ -94,7 +94,9 @@ var app = {
         page = this.registerPage.el;
         $('body').html(page);
     } else if (hash.match(/^#scan/)) {
-        alert("Not yet implemented");
+        this.scanPage = new ScanTagView({}).render();
+        page = this.scanPage.el;
+        $('body').html(page);
     } else if (hash.match(/^#writetag/)) {
         this.writePage = new WriteTagView({}).render();
         page = this.writePage.el;
@@ -166,7 +168,6 @@ var controller = {
             }
         });   
     },
-
 
     // Family tag entered manually
     familyTagEnter: function(ev) {
@@ -352,6 +353,53 @@ var controller = {
         
         context.tagToWrite = tag;
         showMessage(null, "Scan the tag to write code '" + prefix + tag + "'", true, true);
+    },
+    
+    // Scan the tag and get the person details
+    scanTagEnter: function(ev) {
+        ev.preventDefault();
+        if (ev.keyCode==13) {
+            var tag = $('#s-tag').val();
+            var prefix = $("input[name=s-radio]:checked").val();
+            this.scanTag(prefix + tag);
+        }
+    },
+
+    // Scan the tag and get the person details
+    scanTag: function(tag) {
+        console.log(tag);
+        spinner('show');
+        // Get the image tag
+        var img = $('#s-image');
+        var scan_data = {
+            "tag": tag,
+        };
+    
+        var request = $.ajax({
+            type: "POST",
+            url: BASE_URL + "scan",
+            contentType:"application/json",
+            dataType: "json",
+            data: JSON.stringify(scan_data),
+            success: function(data) {
+                if ('error' in data) {
+                    showMessage(null, data.error, false, false);
+                    spinner('hide');
+                } else {
+                    // Display the details from the tag
+                    console.log(JSON.stringify(data.result));
+                    this.scanPage = new ScanTagView(data.result).render();
+                    page = this.scanPage.el;
+                    $('body').html(page);
+                    spinner('hide');
+                }
+            },
+            error: function(error) {
+                showMessage(null, error.statusText, false);
+                spinner('hide');
+                return null;
+            }
+        });
     }
 
 };

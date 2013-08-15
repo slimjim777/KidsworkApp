@@ -211,6 +211,53 @@
     </div>        
 </script>
 
+<!-- Scan Tag -->
+<script id="scan-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <a href="#" class="button header-button header-button-left">Back</a>
+        <h1 class="title">Scan Tag</h1>
+    </header>
+    <div class="content">
+        <div class="inset-form">
+            <fieldset>
+                <input type="radio" name="s-radio" value="F" id="w-family" checked="checked" /><label>Family</label> 
+                <input type="radio" name="s-radio" value="C" id="w-child" /><label>Child</label> 
+                <input type="radio" name="s-radio" value="L" id="w-leader" /><label>Leader</label>
+            <fieldset>
+            <br />
+            <input id="s-tag" type="search" placeholder="Scan or enter the tag number" onkeyup="controller.scanTagEnter(event)" />
+        </div>
+        <!--img src="img/scan.png" alt="scan tag" class="center" id="s-image" /-->
+        <div class="inset-form">
+            <table>
+                <tr>
+                    <td class="label">Family</td><td colspan="2">{{parent_name}}</td>
+                </tr>
+                <tr>
+                    <td class="label">Family Number</td><td colspan="2">{{tagnumber}}</td>
+                </tr>
+                <tr>
+                    <td class="label">Phone</td><td colspan="2">{{phonenumber}}</td>
+                </tr>
+            </table>
+            <div id="registrations">
+                <table style="width:100%">
+                    <thead>
+                        <th class="label">Name</th>
+                        <th class="label">Tag Number</th>
+                        <th class="label">Group</th>
+                    </thead>
+                    {{#each children}}
+                    <tr>
+                        <td>{{name}}</td><td>{{tagnumber}}</td><td>{{group}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+    </div>        
+</script>
+
 <script type="text/javascript" src="lib/jquery-1.9.1.min.js"></script>
 <script type="text/javascript" src="lib/handlebars.js"></script>      
 <script type="text/javascript" src="lib/list.min.js"></script>      
@@ -221,6 +268,7 @@
 <script type="text/javascript" src="js/RegisterView.js"></script>
 <script type="text/javascript" src="js/OverviewView.js"></script>
 <script type="text/javascript" src="js/WriteTagView.js"></script>
+<script type="text/javascript" src="js/ScanTagView.js"></script>
 <script type="text/javascript" src="js/app.js"></script>
 <script type="text/javascript" src="nfc.js"></script>
 

@@ -298,3 +298,9 @@ transform:scale(.3)}
     border: 1px solid #ccc;
     border-radius: 10px;
 }
+
+td.label, th.label {
+    font-weight: bold;
+    /* color: #999; */
+    padding-right: 5px;
+}
