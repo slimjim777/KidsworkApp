@@ -35,11 +35,9 @@ var app = {
   deviceready: function () {
     // note that this is an event handler so the scope is that of the event
     // so we need to call app.report(), and not this.report()
-    console.log('deviceready');
     if(nfc){
       nfc.addNdefListener(function (nfcEvent) {
         nfcActivity(nfcEvent); // TODO uncomment me
-        console.log("Attempting to bind to NFC");
       }, function () {
         console.log("Success.  Listening for tags..");
       }, function () {
@@ -51,8 +49,6 @@ var app = {
   route: function() {
     var hash = window.location.hash;
     var page;
-    console.log("Route:");
-    console.log(hash);
     
     var action_in;
     if (context.action === 'Sign-In') {
@@ -112,7 +108,6 @@ var controller = {
     events: function() {
         spinner('show');
         if (!app.eventsPage) {
-            console.log(BASE_URL + 'events');
             $.getJSON(BASE_URL + 'events', function(data) {
                 app.eventsPage = new EventsView(data.result).render();
                 page = app.eventsPage.el;
@@ -367,12 +362,11 @@ var controller = {
 
     // Scan the tag and get the person details
     scanTag: function(tag) {
-        console.log(tag);
         spinner('show');
         // Get the image tag
         var img = $('#s-image');
         var scan_data = {
-            "tag": tag,
+            "tag": tag
         };
     
         var request = $.ajax({
@@ -387,7 +381,11 @@ var controller = {
                     spinner('hide');
                 } else {
                     // Display the details from the tag
-                    console.log(JSON.stringify(data.result));
+                    if (tag.charAt(0)==='F') {
+                        data.result.isFamily = true;
+                    } else {
+                        data.result.isFamily = false; 
+                    }
                     this.scanPage = new ScanTagView(data.result).render();
                     page = this.scanPage.el;
                     $('body').html(page);
@@ -416,11 +414,6 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
   }
   
   if (hash.match(/^#writetag/)) { // do we have an action to write or not?
-	// write
-    //var newUrl = actions[action].format(option);
-    //console.log("New URL", newUrl);
-    //var ndefRecord = ndef.uriRecord(newUrl); // support more types.. TODO
-    
     // Bail out if the tagToWrite isn't set
     if (!context.tagToWrite) {
         this.writeTag();
@@ -440,7 +433,6 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // Read NFC tag
 	var tag = nfcEvent.tag;
 	var tagData = nfc.bytesToString(tag.ndefMessage[0].payload); // TODO make this less fragile 
-	//alert(tagData);
 
     // Analyse the prefix and tag Number
     var groups = tagData.match(/(^[FCL])(\d+$)/);

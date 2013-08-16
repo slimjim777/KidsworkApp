@@ -220,8 +220,8 @@
     <div class="content">
         <div class="inset-form">
             <fieldset>
-                <input type="radio" name="s-radio" value="F" id="w-family" checked="checked" /><label>Family</label> 
-                <input type="radio" name="s-radio" value="C" id="w-child" /><label>Child</label> 
+                <input type="radio" name="s-radio" value="F" id="w-family" /><label>Family</label> 
+                <input type="radio" name="s-radio" value="C" id="w-child" checked="checked" /><label>Child</label> 
                 <input type="radio" name="s-radio" value="L" id="w-leader" /><label>Leader</label>
             <fieldset>
             <br />
@@ -229,6 +229,7 @@
         </div>
         <!--img src="img/scan.png" alt="scan tag" class="center" id="s-image" /-->
         <div class="inset-form">
+            {{#if isFamily}}
             <table>
                 <tr>
                     <td class="label">Family</td><td colspan="2">{{parent_name}}</td>
@@ -254,6 +255,29 @@
                     {{/each}}
                 </table>
             </div>
+            {{else}}
+            <table>
+                <tr><td class="label">Name</td><td>{{name}}</td></tr>
+                <tr><td class="label">Tag Number</td><td>{{tagnumber}}</td></tr>
+                <tr><td class="label">Parents</td><td>{{parent}}</td></tr>
+                <tr><td class="label">Date of Birth</td><td>{{dob}}</td></tr>
+                <tr><td class="label">School Year</td><td>{{school_year}}</td></tr>
+                <tr><td class="label">Group</td><td>{{group}}</td></tr>
+                <tr><td class="label">Team</td><td>{{team}}</td></tr>
+                <tr>
+                    <td class="label" style="vertical-align:top">Medical Info</td>
+                    <td>
+                        <ul class="list">
+                        {{#each medical_info}}
+                            <li>{{this}}</li>
+                        {{/each}}
+                        <ul>
+                    </td>
+                </tr>
+                <tr><td class="label">Medical Notes</td><td>{{medical_notes}}</td></tr>
+            </table>
+
+            {{/if}}
         </div>
     </div>        
 </script>
