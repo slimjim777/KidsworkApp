@@ -12,6 +12,22 @@
 
 <body>
 
+<!-- Login -->
+<script id="login-tpl" type="text/x-handlebars-template">
+    <header class="bar-title">
+        <h1 class="title">Kidswork Registration</h1>
+    </header>
+    <div id="home" class="content">
+        <div class="inset-form">
+        <form>
+            <input id="username" type="text" placeholder="Username" />
+            <input id="password" type="password" placeholder="Password" />
+            <input id="url" type="text" value="https://" placeholder="Web address portal" />
+            <a href="#login" class="button button-block" onclick="controller.login(event)">Login</a>
+        </form>
+        </div>
+    </div>        
+</script>
 
 <!-- Home -->
 <script id="home-tpl" type="text/x-handlebars-template">
@@ -286,6 +302,7 @@
 <script type="text/javascript" src="lib/handlebars.js"></script>      
 <script type="text/javascript" src="lib/list.min.js"></script>      
 <script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/LoginView.js"></script>
 <script type="text/javascript" src="js/HomeView.js"></script>
 <script type="text/javascript" src="js/EventsView.js"></script>
 <script type="text/javascript" src="js/FamilyView.js"></script>

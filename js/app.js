@@ -2,6 +2,7 @@ var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
 var MIMETYPE = 'text/kidswork';
 
 var context = {
+    authenticated: null,
     eventId: null,
     eventName: null,
     familyId: null,
@@ -50,6 +51,11 @@ var app = {
     var hash = window.location.hash;
     var page;
     
+    // Handle authentication
+    if ((!context.authenticated) && (!hash.match(/^#login/))) {
+        hash = '#login';
+    }
+    
     var action_in;
     if (context.action === 'Sign-In') {
         action_in = true;
@@ -57,19 +63,29 @@ var app = {
         action_in = false;
     }    
     
+    // Handling page routing
     if (!hash) {
         this.homePage = new HomeView({}).render();
         page = this.homePage.el;
         $('body').html(page);
+        
+    } else if (hash.match(/^#login/)) {
+        this.loginPage = new LoginView({}).render();
+        page = this.loginPage.el;
+        $('body').html(page);
+
     } else if (hash.match(/^#events/)) {
         controller.events();
+        
     } else if (hash.match(/^#family/)) {
         var familyData = {action: context.action, eventName: context.eventName, action_in:action_in };
         this.familyPage = new FamilyView(familyData).render();
         page = this.familyPage.el;
         $('body').html(page);
+        
     } else if (hash.match(/^#overview/)) {
         controller.registrations();
+        
     } else if (hash.match(/^#register/)) {
         var registerData;
         if (context.family) {
@@ -104,6 +120,57 @@ var app = {
 
 
 var controller = {
+
+    login: function(ev) {
+        ev.preventDefault();
+        
+        var user = $('#username').val();
+        var password = $('#password').val();
+        var url = $('#url').val();
+        
+        if ((!user) || (!password) || (!url)) {
+            showMessage(null, 'All fields need to be entered', false, false);
+            return;
+        }
+        
+        // Save the url and try logging in
+        spinner('show');
+        BASE_URL = url + '/rest/v1.0/';
+        
+        var login_data = {
+            'username': user,
+            'password': password
+        }
+        
+        var request = $.ajax({
+            type: "POST",
+            url: BASE_URL + "login",
+            contentType:"application/json",
+            dataType: "json",
+            data: JSON.stringify(login_data),
+            success: function(data) {
+                if ('error' in data) {
+                    showMessage(null, data.error, false, false);
+                    spinner('hide');
+                } else {
+                    // Login successful
+                    context.authenticated = true;
+                    window.location.hash = '#';
+                    spinner('hide');
+                }
+            },
+            error: function(error) {
+                if (error.status == '403') {
+                    showMessage(null, "Error logging in. Please check your credentials", false, false);
+                } else {
+                    showMessage(null, error.responseText, false, false);
+                }
+                spinner('hide');
+                return null;
+            }
+        });        
+        
+    },
 
     events: function() {
         spinner('show');
