@@ -51,6 +51,7 @@ var app = {
     var hash = window.location.hash;
     var page;
     
+    console.log(hash);
     // Handle authentication
     if ((!context.authenticated) && (!hash.match(/^#login/))) {
         hash = '#login';
@@ -140,7 +141,9 @@ var controller = {
         var login_data = {
             'username': user,
             'password': password
-        }
+        };
+        
+        console.log(BASE_URL);
         
         var request = $.ajax({
             type: "POST",
@@ -154,9 +157,11 @@ var controller = {
                     spinner('hide');
                 } else {
                     // Login successful
+                    console.log("Login successful");
                     context.authenticated = true;
                     window.location.hash = '#';
                     spinner('hide');
+                    app.route();
                 }
             },
             error: function(error) {
@@ -263,6 +268,7 @@ var controller = {
                     context.family = data;
                     window.location.hash = '#register';
                     spinner('hide');
+                    app.route();
                 }
             },
             error: function(error) {
@@ -370,6 +376,7 @@ var controller = {
                     showMessage($('#f-message'), "Done! Next!", true, false);
                     window.location.hash = '#family';
                     spinner('hide');
+                    app.route();
                 }
             },
             error: function(error) {
