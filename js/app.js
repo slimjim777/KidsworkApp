@@ -71,7 +71,18 @@ var app = {
         $('body').html(page);
         
     } else if (hash.match(/^#login/)) {
-        this.loginPage = new LoginView({}).render();
+        // Get the stored values
+        var user = window.localStorage.getItem('username');
+        var url = window.localStorage.getItem('url');
+        if (!url) {
+            url = 'https://';
+        }
+        var login_data = {
+            username: user,
+            url: url
+        };
+        
+        this.loginPage = new LoginView(login_data).render();
         page = this.loginPage.el;
         $('body').html(page);
 
@@ -159,6 +170,8 @@ var controller = {
                     // Login successful
                     console.log("Login successful");
                     context.authenticated = true;
+                    window.localStorage.setItem('username', login_data.username);
+                    window.localStorage.setItem('url', url);
                     window.location.hash = '#';
                     spinner('hide');
                     app.route();
@@ -502,7 +515,7 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     }, function (reason) {
         showMessage(null, "Failed to write tag: " + JSON.stringify(reason), false, false);
     });
-	
+    
   } else {
     // Read NFC tag
 	var tag = nfcEvent.tag;
@@ -511,7 +524,7 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // Analyse the prefix and tag Number
     var groups = tagData.match(/(^[FCL])(\d+$)/);
     if ((!groups) || (groups.length != 3)) {
-        alert($('f-familyid'), "The tag number is invalid: " + tagData);
+        alert( "The tag number is invalid: " + tagData);
         showMessage($('f-familyid'), "The tag number is invalid: " + tagData, false, false);
         return; 
     }
@@ -526,12 +539,18 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
 	} else if ((hash.match(/^#family/)) && (tagPrefix !== 'F')) {
 	    // We're on the family screen and got an unexpected tag
 	    showMessage($('f-message'), "The tag number is invalid: " + tagData, false, false);
+
 	} else if ((hash.match(/^#register/)) && (tagPrefix === 'C')) {
 	    // We're on the register screen and are expecting a child tag
 	    controller.childByTag(tagNumber);
 	} else if ((hash.match(/^#register/)) && (tagPrefix !== 'C')) {
 	    // We're on the family screen and got an unexpected tag
 	    showMessage($('r-message'), "The tag number is invalid: " + tagData, false, false);
+
+	} else if (hash.match(/^#scan/)) {
+	    // On the scan tag page
+	    controller.scanTag(tagPrefix + tagNumber);
+	    
     } else {
         alert("The tag number is invalid: " + tagData);
     }
