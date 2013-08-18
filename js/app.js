@@ -17,7 +17,10 @@ var context = {
     },
     storeAction: function(act) {
         this.action = act;
-    }
+    },
+    regList: null,
+    filterGroup: 'All',
+    filterStage: 'All'
 };
 
 var app = {
@@ -51,7 +54,6 @@ var app = {
     var hash = window.location.hash;
     var page;
     
-    console.log(hash);
     // Handle authentication
     if ((!context.authenticated) && (!hash.match(/^#login/))) {
         hash = '#login';
@@ -154,8 +156,6 @@ var controller = {
             'password': password
         };
         
-        console.log(BASE_URL);
-        
         var request = $.ajax({
             type: "POST",
             url: BASE_URL + "login",
@@ -168,7 +168,6 @@ var controller = {
                     spinner('hide');
                 } else {
                     // Login successful
-                    console.log("Login successful");
                     context.authenticated = true;
                     window.localStorage.setItem('username', login_data.username);
                     window.localStorage.setItem('url', url);
@@ -237,7 +236,15 @@ var controller = {
                     var options = {
                         valueNames: ['name', 'group','team','school_year','stage']
                     };
-                    var list = new List('registrations', options);
+                    context.regList = new List('registrations', options);
+                    
+                    $('#o-all').click( controller.listSelect );
+                    $('#o-preschool').click( controller.listSelect );
+                    $('#o-primary').click( controller.listSelect );
+                    $('#o-r-all').click( controller.radioSelect );
+                    $('#o-r-in').click( controller.radioSelect );
+                    $('#o-r-out').click( controller.radioSelect );
+                    
                     spinner('hide');
                 }
             },
@@ -421,6 +428,53 @@ var controller = {
                 '</div>' +
                 '</div>';
     },
+
+    radioSelect: function () {
+        var value = $(this).text();
+        context.filterStage = $.trim(value);
+        var $el = $(this);
+        $el.siblings().removeClass('active');
+        $el.addClass('active');
+        controller.listFilter();
+        return false;    
+    },
+        
+    listSelect: function () {
+        var value = $(this).text();
+        context.filterGroup = $.trim(value);
+        var $li = $(this).parent();
+        $li.siblings().removeClass('active');
+        $li.addClass('active');
+        controller.listFilter();
+        return false;    
+    },
+    
+    listFilter: function () {
+        context.regList.filter(function(item) {
+            var result1 = false;
+            var result2 = false;
+            
+            // Check the groups
+            if (context.filterGroup === 'All') {
+                result1 = true;
+            } else if ($.trim(item.values().group) === context.filterGroup) {
+                result1 = true;
+            }
+            
+            // Check the status
+            if (context.filterStage === 'All') {
+                result2 = true;
+            } else if ($.trim(item.values().stage) === context.filterStage) {
+                result2 = true;
+            }
+            
+            if ((result1) && (result2)) {
+                return true;
+            } else {
+                return false;            
+            }
+        });
+    },
     
     writeTag: function() {
         context.tagToWrite = null;
@@ -533,20 +587,24 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     tagPrefix = groups[1];
     tagNumber = groups[2];
 	
-	if ((hash.match(/^#family/)) && (tagPrefix === 'F')) {
-	    // We're on the family screen and are expecting a family tag
-	    controller.familyByTag(tagNumber);
-	} else if ((hash.match(/^#family/)) && (tagPrefix !== 'F')) {
-	    // We're on the family screen and got an unexpected tag
-	    showMessage($('f-message'), "The tag number is invalid: " + tagData, false, false);
-
-	} else if ((hash.match(/^#register/)) && (tagPrefix === 'C')) {
-	    // We're on the register screen and are expecting a child tag
-	    controller.childByTag(tagNumber);
-	} else if ((hash.match(/^#register/)) && (tagPrefix !== 'C')) {
-	    // We're on the family screen and got an unexpected tag
-	    showMessage($('r-message'), "The tag number is invalid: " + tagData, false, false);
-
+	if (hash.match(/^#family/)) {
+	    if (tagPrefix === 'F') {
+	        // We're on the family screen and are expecting a family tag
+	        controller.familyByTag(tagNumber);
+	    } else {
+	        // We're on the family screen and got an unexpected tag
+	        showMessage($('f-message'), "The tag number is invalid: " + tagData, false, false);
+        }
+        
+	} else if (hash.match(/^#register/)) {
+	    if (tagPrefix === 'C') {
+	        // We're on the register screen and are expecting a child tag
+	        controller.childByTag(tagNumber);
+	    } else {
+	        // We're on the family screen and got an unexpected tag
+	        showMessage($('r-message'), "The tag number is invalid: " + tagData, false, false);
+        }
+        
 	} else if (hash.match(/^#scan/)) {
 	    // On the scan tag page
 	    controller.scanTag(tagPrefix + tagNumber);

@@ -292,6 +292,15 @@ transform:scale(.3)}
     text-align: center;
 }
 
+#registrations th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  background-color: #f8f8f8;
+  background-image: -webkit-linear-gradient(top, #f8f8f8 0, #d4d4d4 100%);
+  background-image: linear-gradient(to bottom, #f8f8f8 0, #d4d4d4 100%);
+
+}
+
 .inset-form {
     margin: 10px;
     padding: 10px;
@@ -303,4 +312,28 @@ td.label, th.label {
     font-weight: bold;
     /* color: #999; */
     padding-right: 5px;
+}
+
+#filters {
+    margin:10px;
+    padding: 10px;
+}
+
+.radio {
+    color: #333;
+    margin: 10px;
+    padding: 10px;
+    background-color: #f8f8f8;
+    background-image: -webkit-linear-gradient(top, #f8f8f8 0, #d4d4d4 100%);
+    background-image: linear-gradient(to bottom, #f8f8f8 0, #d4d4d4 100%);    
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-weight: bold;
+}
+
+.radio.active {
+  background-color: #1eb0e9;
+  background-image: -webkit-linear-gradient(top, #1eb0e9 0, #109adc 100%);
+  background-image: linear-gradient(to bottom, #1eb0e9 0, #109adc 100%);
+  border: 1px solid blue;
 }

@@ -69,13 +69,13 @@
     <div class="bar-standard bar-header-secondary">
       <ul class="segmented-controller">
         <li class="active">
-          <a href="#overview">All</a>
+          <a href="#overview" id="o-all">All</a>
         </li>
         <li>
-          <a href="#overview">Rising Stars</a>
+          <a href="#overview" id="o-preschool">Pre-school</a>
         </li>
         <li>
-          <a href="#overview">ROAR</a>
+          <a href="#overview" id="o-primary">Primary</a>
         </li>
       </ul>    
     </div>
@@ -97,6 +97,11 @@
     </nav>    
     <div class='content'>
         <div id="registrations">
+        <div id="filters">
+                <a href="#overview" id="o-r-all" class="radio active">All</a>
+                <a href="#overview" id="o-r-in" class="radio">Signed-In</a>
+                <a href="#overview" id="o-r-out" class="radio">Signed-Out</a>
+        </div>
         <table>
             <thead>
             <tr>
