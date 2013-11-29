@@ -20,7 +20,8 @@ var context = {
     },
     regList: null,
     filterGroup: 'All',
-    filterStage: 'All'
+    filterStage: 'All',
+    login_data: null
 };
 
 var app = {
@@ -53,6 +54,8 @@ var app = {
   route: function() {
     var hash = window.location.hash;
     var page;
+    
+    //console.log(hash);
     
     // Handle authentication
     if ((!context.authenticated) && (!hash.match(/^#login/))) {
@@ -169,6 +172,7 @@ var controller = {
                 } else {
                     // Login successful
                     context.authenticated = true;
+                    context.login_data = login_data;
                     window.localStorage.setItem('username', login_data.username);
                     window.localStorage.setItem('url', url);
                     window.location.hash = '#';
@@ -192,11 +196,27 @@ var controller = {
     events: function() {
         spinner('show');
         if (!app.eventsPage) {
-            $.getJSON(BASE_URL + 'events', function(data) {
-                app.eventsPage = new EventsView(data.result).render();
-                page = app.eventsPage.el;
-                $('body').html(page);
-                spinner('hide');
+            var request = $.ajax({
+                type: "POST",
+                url: BASE_URL + "events",
+                contentType:"application/json",
+                dataType: "json",
+                data: JSON.stringify(context.login_data),
+                success: function(data) {
+                    app.eventsPage = new EventsView(data.result).render();
+                    page = app.eventsPage.el;
+                    $('body').html(page);
+                    spinner('hide');
+                },
+                error: function(error) {
+                    if (error.status == '403') {
+                        showMessage(null, "Error logging in. Please check your credentials", false, false);
+                    } else {
+                        showMessage(null, error.responseText, false, false);
+                    }
+                    spinner('hide');
+                    return null;
+                }
             });
         } else {
             // Show the events that were previously fetched
@@ -204,13 +224,16 @@ var controller = {
             $('body').html(page);
             spinner('hide');
         }
+        
     },
 
     // Get the registrations for the event
     registrations: function(tag) {
         spinner('show');
         var reg_data = {
-            "event_id": context.eventId
+            "event_id": context.eventId,
+            "username": context.login_data.username,
+            "password": context.login_data.password
         };
         
         var overviewData = {name: context.eventName, eventId: context.eventId};
@@ -270,7 +293,9 @@ var controller = {
         context.familyTag = tag;
         var family_data = {
             "family_number": context.familyTag,
-            "event_id": context.eventId
+            "event_id": context.eventId,
+            "username": context.login_data.username,
+            "password": context.login_data.password
         };
     
         var request = $.ajax({
@@ -366,7 +391,9 @@ var controller = {
         var register_data = {
             family_number: context.familyTag,
             event_id: context.eventId,
-            people: []      
+            people: [],
+            username: context.login_data.username,
+            password: context.login_data.password
         };
         
         for (i in context.action_list) {
@@ -507,7 +534,9 @@ var controller = {
         // Get the image tag
         var img = $('#s-image');
         var scan_data = {
-            "tag": tag
+            "tag": tag,
+            "username": context.login_data.username,
+            "password": context.login_data.password            
         };
     
         var request = $.ajax({
