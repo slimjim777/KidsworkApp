@@ -593,7 +593,6 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     var ndefRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(context.tagToWrite));
     
     nfc.write([ndefRecord], function () {
-        navigator.notification.vibrate(500);
         showMessage(null, "Tag written successfully with code " + context.tagToWrite, true, false);
     }, function (reason) {
         showMessage(null, "Failed to write tag: " + JSON.stringify(reason), false, false);
@@ -607,7 +606,6 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     // Analyse the prefix and tag Number
     var groups = tagData.match(/(^[FCL])(\d+$)/);
     if ((!groups) || (groups.length != 3)) {
-        alert( "The tag number is invalid: " + tagData);
         showMessage($('f-familyid'), "The tag number is invalid: " + tagData, false, false);
         return; 
     }
