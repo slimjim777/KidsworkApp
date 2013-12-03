@@ -514,7 +514,7 @@ var controller = {
             return;
         }
         
-        context.tagToWrite = tag;
+        context.tagToWrite = prefix + tag;
         showMessage(null, "Scan the tag to write code '" + prefix + tag + "'", true, true);
     },
     
