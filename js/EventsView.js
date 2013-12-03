@@ -3,9 +3,8 @@ var EventsView = function(events) {
     this.findByName = function() {
         var e = {};
         e.id = 1;
-        e.name = 'James';
+        e.name = '';
         var employees = [e];
-        //$('.employee-list').html(HomeView.liTemplate(employees));
     };
     
     this.initialize = function() {
