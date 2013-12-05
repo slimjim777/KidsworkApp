@@ -1,5 +1,5 @@
 body {
-  font: 16px/1.5 "Helvetica Neue", sans-serif;
+  font: 2.0em "Helvetica Neue", sans-serif;
 }
 
 .bar-title [class*="button"] {
@@ -7,7 +7,19 @@ body {
 }
 
 .tab-label {
-  font-size: 14px;
+  font-size: 20px;
+}
+
+.inset-form label {
+    font-size: 20px;    
+}
+
+.bar-tab ~ .content {
+  bottom: 61px;
+}
+
+.bar-tab {
+  height: 60px;
 }
 
 h3.instructions {
@@ -111,10 +123,13 @@ div.highlight-out {
     margin-right: auto;
 }
 
-.action-group a.button-block {
+a.button-block {
     padding: 30px;
 }
 
+.button-block {
+    font-size: 1.5em;
+}
 
 
 /* Spinner */

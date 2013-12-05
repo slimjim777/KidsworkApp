@@ -583,6 +583,11 @@ function nfcActivity(nfcEvent) { // On NFC Activity..
     alert('Ignore scan for home page');
     return;
   }
+
+  if (hash.match(/^#overview/)) {
+    showMessage(null, "No! No! No! Don't scan on this page! Touch the Sign-In/Out bar to go to the screen", false, false);
+    return;
+  }
   
   if (hash.match(/^#writetag/)) { // do we have an action to write or not?
     // Bail out if the tagToWrite isn't set
