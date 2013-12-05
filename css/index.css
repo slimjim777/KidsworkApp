@@ -1,3 +1,15 @@
+body {
+  font: 16px/1.5 "Helvetica Neue", sans-serif;
+}
+
+.bar-title [class*="button"] {
+    font-size: 20px;
+}
+
+.tab-label {
+  font-size: 14px;
+}
+
 h3.instructions {
     color: #999;
     display: block;

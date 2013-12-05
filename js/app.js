@@ -344,7 +344,8 @@ var controller = {
         var $act_list = $('#r-action-list');
         if (!found) {
             context.action_list.push({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).text().replace('+','')});
-            var item = '<li><a href="#register" name="' + el.name + '-act" id="' + el.id + '-act"' + ' onclick="controller.childRemove(event, this)">'+ $(el).html().replace('+','x') +'</a></li>';
+            var item = '<li><a href="#register" name="' + el.name + '-act" id="' + el.id + '-act"' + ' onclick="controller.childRemove(event, this)">'
+                        + $(el).html().replace('+','x') +'</a></li>';
             $act_list.append(item);
         }
     },
